@@ -1,0 +1,30 @@
+gPLINK II: Genetic Boogaloo
+=============================
+
+To do list:
+
+> Make the menu actually, y'know, visible.
+
+> Log files should not only be more easily viewable...
+
+> ...but should also be able to be viewed while a command is in progress.
+
+> PROGRESS BAR. Some commands don't tell you how long they're taking, but others do; eg --genome. Possibly will need to go through entire thing looking at how that progress in the log is formatted but it *ought?!* to be possible to get that and thus extrapolate to estimate time left on that job.
+	> Progress bar should be between the Operations view and the Log viewer, or possibly IN the operations viewer under that command if that's possible.
+
+> Then, most importantly, need to implement a queue system which allows commands to be stacked, future commands added, edited or rearranged while earlier commands are being executed; and a tolerance parameter for whether it should immediately die if errors arise.
+
+> Then can add a mini-library of commands for common tasks like PCA.
+
+> But before you can add an actual PCA task we need to be able to run eg the smartpca.perl command. The existing code already has a "non-PLINK command" option so just expand this.
+
+> you know what this program needs? a Help menu
+
+> Reorderable list of commands to come, appended to the end of the Operations pane, can come last because it's actually slightly more complicated: you can reorder future events, but not past ones, and you can't make a future event go before a past one. Basically there are 3 areas (past, present, future) which don't overlap.
+
+> Maybe also allow user to save past commands as another .txt so they can reuse current session (or equivalent). Bearing in mind the .txts of use for queue saving is literally just a list of plink commands such as one might type into a command line, so easy to edit for existing pros.
+
+Right-clicking on a non-PLINK command in the operation view is broken; menu assumes it's a plink command and allows reexecution only as a plink.
+dude.
+
+the whole genericop thing seems pretty broken to me.
