@@ -49,7 +49,7 @@ public interface KeyWords {
 	/**
 	 * key word for the operations nodes
 	 */
-	static public String OP_KEY = "operation";
+	static public String CALC_KEY = "calculation";
 	
 	/**
 	 * key word for the name attributes

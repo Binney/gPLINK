@@ -14,7 +14,6 @@ import org.w3c.dom.Element;
 import gCLINE.uk.ac.cam.sb913.gCLINE.data.KeyWords;
 import gCLINE.uk.ac.cam.sb913.gCLINE.data.Record;
 import gCLINE.uk.ac.cam.sb913.gCLINE.data.RunCommand;
-import gPLINK2.uk.ac.cam.sb913.gPLINK2.data.Project;
 
 /**
  * A class that contains the information for a given
@@ -131,6 +130,9 @@ public abstract class OperationInfo extends DefaultMutableTreeNode
 		return (opName != "");
 	}
 
+	public abstract void addFile(String type, String given_name, 
+			String localDesc, String globalDesc);
+	
 	/**
 	 * Execute this ExecutableInfo.
 	 * @param data

@@ -35,10 +35,10 @@ import gPLINK2.uk.ac.cam.sb913.gPLINK2.forms.StratAnaly;
 import gPLINK2.uk.ac.cam.sb913.gPLINK2.forms.Validate;
 
 public class FormMenuCreator {
-	
-	public JMenu createFormMenu(FormCreator dialog) {
 
-		JMenu formMenu = new JMenu("PLINK command");
+	public static JMenu createFormMenu(FormCreator dialog) {
+
+		JMenu formMenu = new JMenu("PLINK");
 
 		formMenu.add(createDataManagementMenu(dialog));
 		formMenu.add(createSummaryStatisticsMenu(dialog));
@@ -50,7 +50,7 @@ public class FormMenuCreator {
 
 	}
 
-	private JMenu createDataManagementMenu(FormCreator dialog) {
+	private static JMenu createDataManagementMenu(FormCreator dialog) {
 		JMenu dataMangMenu = new JMenu("Data Management");
 
 		dataMangMenu.add(createFilesets(dialog));
@@ -61,7 +61,7 @@ public class FormMenuCreator {
 
 	// <editor-fold defaultstate="collapsed" desc="Data management menu items">
 
-	private JMenuItem createFilesets(final FormCreator dialog) {
+	private static JMenuItem createFilesets(final FormCreator dialog) {
 		JMenuItem filesets = new JMenuItem(GenFileSet.name);
 		filesets.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -71,7 +71,7 @@ public class FormMenuCreator {
 		return filesets;
 	}
 
-	private JMenuItem createMerge(final FormCreator dialog) {
+	private static JMenuItem createMerge(final FormCreator dialog) {
 		JMenuItem merge = new JMenuItem(Merge.name);
 		merge.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -83,7 +83,7 @@ public class FormMenuCreator {
 
 	// </editor-fold>
 	
-	private JMenu createSummaryStatisticsMenu(FormCreator dialog) {
+	private static JMenu createSummaryStatisticsMenu(FormCreator dialog) {
 		JMenu summaryMenu = new JMenu("Summary Statistics");
 
 		summaryMenu.add(createValidate(dialog));
@@ -99,7 +99,7 @@ public class FormMenuCreator {
 
 	// <editor-fold defaultstate="collapsed" desc="Statistics menu items">
 
-	private JMenuItem createValidate(final FormCreator dialog) {
+	private static JMenuItem createValidate(final FormCreator dialog) {
 		JMenuItem validate = new JMenuItem(Validate.name);
 		validate.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -109,7 +109,7 @@ public class FormMenuCreator {
 		return validate;
 	}
 
-	private JMenuItem createMissing(final FormCreator dialog) {
+	private static JMenuItem createMissing(final FormCreator dialog) {
 		JMenuItem missing = new JMenuItem(Missing.name);
 		missing.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -119,7 +119,7 @@ public class FormMenuCreator {
 		return missing;
 	}
 
-	private JMenuItem createHWE(final FormCreator dialog) {
+	private static JMenuItem createHWE(final FormCreator dialog) {
 		JMenuItem hwe = new JMenuItem(HardyWinEq.name);
 		hwe.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -129,7 +129,7 @@ public class FormMenuCreator {
 		return hwe;
 	}
 
-	private JMenuItem createMendelErr(final FormCreator dialog) {
+	private static JMenuItem createMendelErr(final FormCreator dialog) {
 		JMenuItem mendel = new JMenuItem(MendelErr.name);
 		mendel.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -139,7 +139,7 @@ public class FormMenuCreator {
 		return mendel;
 	}
 
-	private JMenuItem createAlleleFreq(final FormCreator dialog) {
+	private static JMenuItem createAlleleFreq(final FormCreator dialog) {
 		JMenuItem alleleFreq = new JMenuItem(AlleleFreq.name);
 		alleleFreq.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -149,7 +149,7 @@ public class FormMenuCreator {
 		return alleleFreq;
 	}
 
-	private JMenuItem createHapFreq(final FormCreator dialog) {
+	private static JMenuItem createHapFreq(final FormCreator dialog) {
 		JMenuItem hapFreq = new JMenuItem(HaploFreq.name);
 		hapFreq.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -159,7 +159,7 @@ public class FormMenuCreator {
 		return hapFreq;
 	}
 
-	private JMenuItem createHapPhase(final FormCreator dialog) {
+	private static JMenuItem createHapPhase(final FormCreator dialog) {
 		JMenuItem hapPhase = new JMenuItem(HaploPhase.name);
 		hapPhase.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -171,7 +171,7 @@ public class FormMenuCreator {
 
 	// </editor-fold>
 
-	private JMenu createStratificationMenu(final FormCreator dialog) {
+	private static JMenu createStratificationMenu(final FormCreator dialog) {
 		JMenu stratMenu = new JMenu("Stratification");
 		
 		stratMenu.add(createIBS(dialog));
@@ -183,7 +183,7 @@ public class FormMenuCreator {
 
 	// <editor-fold defaultstate="collapsed" desc="Stratification menu items">
 
-	private JMenuItem createIBS(final FormCreator dialog) {
+	private static JMenuItem createIBS(final FormCreator dialog) {
 		JMenuItem ibs = new JMenuItem(IBSdist.name);
 		ibs.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -193,7 +193,7 @@ public class FormMenuCreator {
 		return ibs;
 	}
 
-	private JMenuItem createClust(final FormCreator dialog) {
+	private static JMenuItem createClust(final FormCreator dialog) {
 		JMenuItem clust = new JMenuItem(Clustering.name);
 		clust.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -203,7 +203,7 @@ public class FormMenuCreator {
 		return clust;
 	}
 
-	private JMenuItem createNeighbours(final FormCreator dialog) {
+	private static JMenuItem createNeighbours(final FormCreator dialog) {
 		JMenuItem neigh = new JMenuItem(NearNeigh.name);
 		neigh.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -215,7 +215,7 @@ public class FormMenuCreator {
 
 	// </editor-fold>
 
-	private JMenu createAssociationMenu(FormCreator dialog) {
+	private static JMenu createAssociationMenu(FormCreator dialog) {
 
 		JMenu associationMenu = new JMenu("Association");
 		
@@ -236,7 +236,7 @@ public class FormMenuCreator {
 
 	// <editor-fold defaultstate="collapsed" desc="Association menu items">
 
-	private JMenuItem createAlleleAssoc(final FormCreator dialog) {
+	private static JMenuItem createAlleleAssoc(final FormCreator dialog) {
 		JMenuItem alleleA = new JMenuItem(AlleleAssoc.name);
 		alleleA.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -246,7 +246,7 @@ public class FormMenuCreator {
 		return alleleA;
 	}
 
-	private JMenuItem createCCAssoc(final FormCreator dialog) {
+	private static JMenuItem createCCAssoc(final FormCreator dialog) {
 		JMenuItem caseControl =  new JMenuItem(CCAssoc.name);
 		caseControl.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -256,7 +256,7 @@ public class FormMenuCreator {
 		return caseControl;
 	}
 
-	private JMenuItem createFamAssoc(final FormCreator dialog) {
+	private static JMenuItem createFamAssoc(final FormCreator dialog) {
 		JMenuItem famAssoc = new JMenuItem(FamAssoc.name);
 		famAssoc.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -266,7 +266,7 @@ public class FormMenuCreator {
 		return famAssoc;
 	}
 
-	private JMenuItem createStratAnaly(final FormCreator dialog) {
+	private static JMenuItem createStratAnaly(final FormCreator dialog) {
 		JMenuItem stratAnaly = new JMenuItem(StratAnaly.name);
 		stratAnaly.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -276,7 +276,7 @@ public class FormMenuCreator {
 		return stratAnaly;
 	}
 
-	private JMenuItem createQTI(final FormCreator dialog) {
+	private static JMenuItem createQTI(final FormCreator dialog) {
 		JMenuItem qti = new JMenuItem(QuantTrtInt.name);
 		qti.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -286,7 +286,7 @@ public class FormMenuCreator {
 		return qti;
 	}
 
-	private JMenuItem createRegress(final FormCreator dialog) {
+	private static JMenuItem createRegress(final FormCreator dialog) {
 		JMenuItem regress = new JMenuItem(Regression.name);
 		regress.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -296,7 +296,7 @@ public class FormMenuCreator {
 		return regress;
 	}
 
-	private JMenuItem createSetAssoc(final FormCreator dialog) {
+	private static JMenuItem createSetAssoc(final FormCreator dialog) {
 		JMenuItem setAssoc = new JMenuItem(SetAssoc.name);
 		setAssoc.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -306,7 +306,7 @@ public class FormMenuCreator {
 		return setAssoc;
 	}
 
-	private JMenuItem createHaplotypeCC(final FormCreator dialog) {
+	private static JMenuItem createHaplotypeCC(final FormCreator dialog) {
 		JMenuItem haplotypeCC = new JMenuItem(HapCCAssoc.name);
 		haplotypeCC.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -316,7 +316,7 @@ public class FormMenuCreator {
 		return haplotypeCC;
 	}
 
-	private JMenuItem createHaplotypeTDT(final FormCreator dialog) {
+	private static JMenuItem createHaplotypeTDT(final FormCreator dialog) {
 		JMenuItem haplotypeTDT = new JMenuItem(HapTDTAssoc.name);
 		haplotypeTDT.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -326,7 +326,7 @@ public class FormMenuCreator {
 		return haplotypeTDT;
 	}
 
-	private JMenuItem createCondHap(final FormCreator dialog) {
+	private static JMenuItem createCondHap(final FormCreator dialog) {
 		JMenuItem condHap = new JMenuItem(CondHaploAssoc.name);
 		condHap.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -336,7 +336,7 @@ public class FormMenuCreator {
 		return condHap;		
 	}
 
-	private JMenuItem createProxy(final FormCreator dialog) {
+	private static JMenuItem createProxy(final FormCreator dialog) {
 		JMenuItem proxy = new JMenuItem(ProxyAssoc.name);
 		proxy.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -348,7 +348,7 @@ public class FormMenuCreator {
 	
 	// </editor-fold>
 
-	private JMenu createIBDMenu(FormCreator dialog) {
+	private static JMenu createIBDMenu(FormCreator dialog) {
 		JMenu ibdMenu = new JMenu("IBD Estimation");
 
 		ibdMenu.add(createHetz(dialog));
@@ -359,7 +359,7 @@ public class FormMenuCreator {
 
 	// <editor-fold defaultstate="collapsed" desc="IBD menu items">
 
-	private JMenuItem createHetz(final FormCreator dialog) {
+	private static JMenuItem createHetz(final FormCreator dialog) {
 		JMenuItem hetz = new JMenuItem(IndHetz.name);
 		hetz.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -369,7 +369,7 @@ public class FormMenuCreator {
 		return hetz;
 	}
 
-	private JMenuItem createHomoz(final FormCreator dialog) {
+	private static JMenuItem createHomoz(final FormCreator dialog) {
 		JMenuItem homoz = new JMenuItem(HomozRuns.name);
 		homoz.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {

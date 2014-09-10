@@ -77,19 +77,19 @@ public class HierarchyDialog extends JDialog {
 	
 	private String [] getOutFiles(String opName){
 		
-		ArrayList<FileInfo> temp = data.getOp(opName).getOutputFiles();
-		String [] ans = new String [temp.size()];
+		//ArrayList<FileInfo> temp = data.getOp(opName).getOutputFiles();
+		String [] ans = new String [0];//temp.size()]; TODO
 		for(int i = 0; i < ans.length; i++){
-			ans[i] = temp.get(i).toString();
+			//ans[i] = temp.get(i).toString(); TODO
 		}
 		return ans;
 	}
 	
 	private String [] getInFiles(String opName){
-		ArrayList<FileInfo> temp = data.getOp(opName).getInputFiles();
-		String [] ans = new String [temp.size()];
+		//ArrayList<FileInfo> temp = data.getOp(opName).getInputFiles();
+		String [] ans = new String [0];//temp.size()];
 		for(int i = 0; i < ans.length; i++){
-			ans[i] = temp.get(i).toString();
+			//ans[i] = temp.get(i).toString(); TODO
 		}
 		return ans;
 	}
@@ -119,13 +119,13 @@ public class HierarchyDialog extends JDialog {
 		HashSet <String> ansHash = new HashSet<String>();
 		
 		for(OperationInfo op: allOp){
-			ArrayList<FileInfo> infiles = op.getInputFiles();
+			/*ArrayList<FileInfo> infiles = op.getInputFiles(); TODO
 			for(FileInfo temp:infiles){
 				if((temp.toString()).equals(file)){
 					ansHash.add(op.getName());
 					break;
 				}
-			}
+			}*/
 		}
 		String [] ans = new String [ansHash.size()];
 		int i =0;
@@ -143,13 +143,13 @@ public class HierarchyDialog extends JDialog {
 		HashSet <String> ansHash = new HashSet<String>();
 		
 		for(OperationInfo op: allOp){
-			ArrayList<FileInfo> outfiles = op.getOutputFiles();
+			/*ArrayList<FileInfo> outfiles = op.getOutputFiles(); TODO
 			for(FileInfo temp:outfiles){
 				if((temp.toString()).equals(file)){
 					ansHash.add(op.getName());
 					break;
 				}
-			}
+			}*/
 		}
 		String [] ans = new String [ansHash.size()];
 		int i =0;

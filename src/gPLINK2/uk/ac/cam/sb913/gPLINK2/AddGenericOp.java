@@ -172,7 +172,7 @@ public class AddGenericOp extends JDialog {
 				outputfiles.add(new String[]{outlistmodel.get(i).toString(), ""});
 			}
 			
-			data.addOperation(opName.getText(), opDesc.getText(),
+			data.addCalculation(opName.getText(), opDesc.getText(),
 					cline.getText(), null,
 					inputfiles, outputfiles, null);
 			

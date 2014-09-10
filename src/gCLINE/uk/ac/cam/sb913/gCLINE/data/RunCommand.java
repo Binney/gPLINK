@@ -97,12 +97,18 @@ public class RunCommand implements Runnable{
 		if(conn == null){
 			logger.info("Executing command locally: [" + command + "]");
 			String [] temp = stripAndSplit(command);
+			for (String str: temp) {
+				System.out.println(str + " then ");
+			}
+			System.out.println("that's it!");
 			
 			try {
 				@SuppressWarnings("unused") 
 				Process testing = Runtime.getRuntime().exec(temp, null, data.getLocalFolder());
 				
 			} catch (IOException e1) {
+				System.out.println("Error encountered :(");
+				System.out.println(e1.getMessage());
 				logger.error("[run()] IOException trying to run command locally.");
 				String cmd = "";
 				for(String t : temp){

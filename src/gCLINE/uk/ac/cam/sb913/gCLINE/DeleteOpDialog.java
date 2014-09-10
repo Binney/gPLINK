@@ -143,10 +143,10 @@ public class DeleteOpDialog extends JDialog {
 		//populate the infiles
 		for(int i = 0; i < opNames.length; i++){
 			//get the right file set
-			if(inFiles)
-				temp = data.getOp(opNames[i]).getInputFiles();
-			else
-				temp = data.getOp(opNames[i]).getOutputFiles();
+			//if(inFiles)
+				//temp = data.getOp(opNames[i]).getInputFiles();
+			//else // TODO
+				//temp = data.getOp(opNames[i]).getOutputFiles();
 			//add the files to the hash set
 			for(FileInfo f: temp)
 				files.add(f.toString());

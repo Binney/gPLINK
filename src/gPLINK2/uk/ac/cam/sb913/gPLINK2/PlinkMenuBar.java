@@ -275,10 +275,9 @@ public class PlinkMenuBar extends JMenuBar{
 	 * @return A JMenu that has the command specific forms.
 	 */
 	private JMenu createFormsMenu(){
-		FormMenuCreator menuGenerator = new FormMenuCreator();
 		logger.info("[PlinkMenuBar].createFormsMenu() returning blank");
 		PLINK_Execute execute_form = new PLINK_Execute(frame);
-		return menuGenerator.createFormMenu(execute_form);
+		return FormMenuCreator.createFormMenu(execute_form);
 	}
 	
 	/**
@@ -287,7 +286,7 @@ public class PlinkMenuBar extends JMenuBar{
 	 *
 	 */
 	private JMenu createQueueMenu(){
-		queueMenu = new JMenu("Queue PLINK commands");
+		queueMenu = new JMenu("Queue");
 
 		JMenuItem newQueue = new JMenuItem("New queue");
 		newQueue.addActionListener(new ActionListener(){
@@ -297,7 +296,7 @@ public class PlinkMenuBar extends JMenuBar{
 		});
 		queueMenu.add(newQueue);
 
-		JMenuItem importQueue = new JMenuItem("Import queue");
+		JMenuItem importQueue = new JMenuItem("Load queue");
 		importQueue.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO import queue from a txt file of 1 plink command per line
@@ -305,6 +304,7 @@ public class PlinkMenuBar extends JMenuBar{
 				// relative to previous commands' input and output
 			}
 		});
+		queueMenu.add(importQueue);
 
 		return queueMenu;
 	}

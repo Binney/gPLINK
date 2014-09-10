@@ -166,6 +166,7 @@ public class CalculationInfo extends OperationInfo
 	 * @param globalDesc A String that is the description
 	 * for this file globally.
 	 */
+	@Override
 	public void addFile(String type, String given_name, 
 			String localDesc, String globalDesc){
 		
@@ -258,7 +259,7 @@ public class CalculationInfo extends OperationInfo
 	}
 
 	public Element asElement(Document d){
-		Element op = d.createElement(OP_KEY);
+		Element op = d.createElement(CALC_KEY);
 		op.setAttribute(NAME_KEY, name);
 		op.setAttribute(CLINE_KEY, cline);
 		op.setAttribute(TIMESTAMP_KEY, timestamp);
@@ -304,6 +305,8 @@ public class CalculationInfo extends OperationInfo
 	}
 
 	public void execute(Record data) {
+		data.updaterOperation(name);
+		System.out.println("Now I'm executing myself :( " + name);
 		new Thread(new RunCommand(cline, data)).start();
 	}
 
@@ -366,7 +369,7 @@ public class CalculationInfo extends OperationInfo
 		cline = command;
 
 		// TODO attach ifiles and ofiles to input and output nodes one by one
-		System.out.println("New OperationInfo empty: " + givenName + ", " + givenDescript + ", " + command);
+		System.out.println("New CalculationInfo empty: " + givenName + ", " + givenDescript + ", " + command);
 
 	}
 
@@ -375,7 +378,7 @@ public class CalculationInfo extends OperationInfo
 		super(givenParentTree);
 		
 		// TODO make this accept non-PLINK Operations by recognising the --gplink flag and accordingly ignoring the parse loop
-		System.out.println("New OperationInfo parsing: " + givenDescription + ", " + command);
+		System.out.println("New CalculationInfo parsing: " + givenDescription + ", " + command);
 
 		//split the command based on spaces outside of quotes
 		String [] parsedCmd = RunCommand.stripAndSplit(command);
@@ -391,11 +394,15 @@ public class CalculationInfo extends OperationInfo
 		boolean flag_bfile = false;
 		boolean flag_file = false;
 		boolean flag_out = false;
+		
 		for(String element: parsedCmd){
+			System.out.println("Now parsing element " + element);
 			if(flag_out){
+				System.out.println("Naming via parser: " + element);
 				opName = FileInfo.fileName(element);
 				flag_out = false;
 			}else if(flag_bfile){ 
+				System.out.println("Ooh, binaries!");
 				// NB if both --bfile and --file have been flagged, only
 				// binary files will be used as they are faster
 
@@ -404,6 +411,7 @@ public class CalculationInfo extends OperationInfo
 				infiles.add(new String[] {element + ".fam", ""});
 				flag_bfile = false;
 			}else if(flag_file){
+				System.out.println("Base 10 ftw!");
 				infiles.add(new String[] {element + ".map", ""});
 				infiles.add(new String[] {element + ".ped", ""});
 				flag_file = false;
@@ -413,6 +421,7 @@ public class CalculationInfo extends OperationInfo
 					&& !element.endsWith("plink")
 					&& !element.endsWith("plink\"")
 					&& !element.matches("^\\d*\\.?\\d+$")){
+				System.out.println("Now you're just what.");
 				infiles.add(new String[] {element, ""});
 			}
 			flag_file = element.equals("--file");
@@ -421,26 +430,47 @@ public class CalculationInfo extends OperationInfo
 		}
 		
 		name = opName;
+		System.out.println("Naming: " + opName);
 		description = givenDescription;
-		cline = command;
-		add(new DefaultMutableTreeNode(cline));
-		input = new DefaultMutableTreeNode(INPUT_LABEL);
-		add(input);
-		output = new DefaultMutableTreeNode(OUTPUT_LABEL);
-		add(output);
+		addClineNode(command);
+		addInputNode();
+		addOutputNode();
+		stampTime();
 
-		java.util.Date date = new java.util.Date();
-        timestamp = DATEFORMAT.format(date);
-
-		/*TODO import files here (this was previously done by Record directly so need to pass in globalFileNotes separately
-		for(String[] file: infiles){
-			addFile(INFILE_KEY, file[0], file[1], globalFileNotes.get(file[0]));
-		}
-		for(String[] file: outfiles){
-			addFile(OUTFILE_KEY, file[0], file[1], globalFileNotes.get(file[0]));
-		}*/
+		fillFiles(infiles, INFILE_KEY);
+		fillFiles(outfiles, OUTFILE_KEY);
         System.out.println("Done on the creation!");
     }
+	
+	private void addClineNode(String command) {
+		cline = command;
+		add(new DefaultMutableTreeNode(cline));
+	}
+	
+	private void addInputNode() {
+		input = new DefaultMutableTreeNode(INPUT_LABEL);
+		add(input);
+	}
+	
+	private void addOutputNode() {
+		output = new DefaultMutableTreeNode(OUTPUT_LABEL);
+		add(output);
+	}
+	
+	private void stampTime() {
+		java.util.Date date = new java.util.Date();
+        timestamp = DATEFORMAT.format(date);
+	}
+	
+	private void fillFiles(ArrayList<String[]> files, String key) {
+		for(String[] file: files){
+			System.out.println("Now filling files " + file[0] + " and " + file[1]);
+			//addFile(key, file[0], file[1], ((Record)parentTree).globalFileNotes.get(file[0]));
+			addFile(key, file[0], file[1], FileInfo.fileName(file[0]));
+			System.out.println("Now adding file " + file[0]);
+		}
+	}
+
 
 
 }

@@ -129,8 +129,7 @@ public abstract class FormCreator extends JDialog {
 
 		JPopupMenu popUpMenu = new JPopupMenu();
 
-		FormMenuCreator menuGenerator = new FormMenuCreator();
-		popUpMenu.add(menuGenerator.createFormMenu(this));
+		popUpMenu.add(FormMenuCreator.createFormMenu(this));
 
 		popUpMenu.add(createGenericCommandMenu());
 

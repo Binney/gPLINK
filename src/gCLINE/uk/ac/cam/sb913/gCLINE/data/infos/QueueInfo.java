@@ -1,15 +1,10 @@
 package gCLINE.uk.ac.cam.sb913.gCLINE.data.infos;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import gCLINE.uk.ac.cam.sb913.gCLINE.data.Record;
-import gPLINK2.uk.ac.cam.sb913.gPLINK2.data.Project;
 
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import org.w3c.dom.Document;
@@ -32,15 +27,12 @@ public class QueueInfo extends OperationInfo {
 	private int currentTask;
 	
 	public ArrayList<OperationInfo> getOpChildren() {
-		System.out.println("Getting the operation children of " + this.name + " which is a " + this.getClass().getSimpleName() + " and " + this.getChildAt(0).getClass().getSimpleName());
 		ArrayList <OperationInfo> ans = new ArrayList<OperationInfo>();
 		ans.add((OperationInfo)this);
 		// This relies on the fact that the only children of a QueueInfo will be its operations.
 		int numOp = this.getChildCount();
 		for(int i = 0; i < numOp; i ++){
-			System.out.println("Child " + i + " looks like a " + this.getChildAt(i).getClass().getSimpleName());
 			OperationInfo child = (OperationInfo)this.getChildAt(i);
-			System.out.println("Child " + i + " is a " + child.getClass().getSimpleName());
 			ans.add(child);
 		}
 		return ans;
@@ -71,7 +63,7 @@ public class QueueInfo extends OperationInfo {
 		
 		// TODO presumably will also want to append extra conditions here, eg error tolerance options
 
-		Element ops = d.createElement(OP_KEY);
+		Element ops = d.createElement(CALC_KEY);
 		
 		CalculationInfo calcInfo;
 		if(!this.isLeaf()){
@@ -104,14 +96,22 @@ public class QueueInfo extends OperationInfo {
 		return null;
 	}
 	
+	public void addFile(String type, String given_name, 
+			String localDesc, String globalDesc) {
+		// Do nothing. Queues don't have files. TODO
+	}
+	
 	public boolean addCalculation (CalculationInfo calcInfo) {
 		try {
 			// place new operation at end of tree if not present already
-			int index = this.getChildCount();
-			System.out.println("[QueueInfo.addCalculation(CalculationInfo)] adding calculation " + calcInfo.getName() + " to index: " + index);
-			this.parentTree.insertNodeInto(calcInfo, this, index);
-			System.out.println("Just added calculation which is a " + this.getChildAt(index).getClass().getSimpleName());
+			//int index = this.getChildCount();
+			System.out.println("[QueueInfo.addCalculation(CalculationInfo)] adding calculation " + calcInfo.getName() + " to end of branch");
+			//this.parentTree.insertNodeInto(calcInfo, this, index);
+			this.add(calcInfo);
+			System.out.println("Just added calculation which is a " + this.getChildAt(this.getChildCount()).getClass().getSimpleName());
 		} catch (Exception e) {
+			System.out.println("Oh noes!");
+			System.out.println(e.getMessage());
 			return false;
 		}
 		return true;
@@ -121,9 +121,11 @@ public class QueueInfo extends OperationInfo {
 		try {
 			System.out.println("Creating an opinfo from " + cline + " and " + description);
 			CalculationInfo calcInfo = new CalculationInfo(cline, description, null);
-			System.out.println("Adding " + calcInfo.getName() + " which is a " + calcInfo.getClass().getSimpleName());
+			System.out.println("Adding " + calcInfo.getCline() + " which is a " + calcInfo.getClass().getSimpleName());
 			this.addCalculation(calcInfo);
 		} catch (Exception e) {
+			System.out.println("Seriously?!");
+			System.out.println(e.getMessage());
 			return false;
 		}
 		return true;
@@ -135,6 +137,8 @@ public class QueueInfo extends OperationInfo {
 			System.out.println("About to add " + calcInfo.getName() + " which is a " + calcInfo.getClass().getSimpleName());
 			this.addCalculation(calcInfo);
 		} catch (Exception e) {
+			System.out.println("Dangit!");
+			System.out.println(e.getMessage());
 			return false;
 		}
 		return true;
@@ -142,7 +146,10 @@ public class QueueInfo extends OperationInfo {
 	
 	@Override
 	public void execute(Record data) {
+		System.out.println("Now adding " + name);
+		data.updaterOperation(name);
 		// execute next child
+		System.out.println("and executing number " + Integer.toString(currentTask));
 		((CalculationInfo)this.getChildAt(currentTask)).execute(data);
 	}
 
@@ -153,8 +160,12 @@ public class QueueInfo extends OperationInfo {
 		if (currentTask < this.getChildCount()) {
 			this.execute(data);
 		} else {
-			// TODO do nothing or...?
+			writeSuccessLog(success);
 		}
+	}
+	
+	private void writeSuccessLog(boolean success) {
+		// TODO write log file with relevant success code
 	}
 	
 	public QueueInfo (DefaultTreeModel givenparentTree) {

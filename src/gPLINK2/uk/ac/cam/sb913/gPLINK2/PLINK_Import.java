@@ -309,7 +309,7 @@ public class PLINK_Import extends JDialog {
 		    
 			//pull the info from the associated log file
 			String cline = getCommandline(root);
-			//get the input files from the commandline
+			//get the input files from the command line
 			ArrayList <String[]> infiles = getInput(cline);
 			//generate the timestamp for the operation
 			String time = "No time found";
@@ -322,7 +322,7 @@ public class PLINK_Import extends JDialog {
 					new File(data.getLocalFolder(), root + data.getLogExt()).lastModified()));
 			}
 			//add a new operation based on this
-			data.addOperation(root, "", cline, time,
+			data.addCalculation(root, "", cline, time,
 					infiles, new ArrayList<String[]> (), null);
 			
 			//look to see what the status of the operation is

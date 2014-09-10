@@ -588,7 +588,7 @@ public class PLINK_CreateQueue extends FormCreator {
 			for (int i = 0; i < queueItems.size(); i++) {
 			    QueueItem currentOp = queueItems.getElementAt(i);
 			    // parse here
-			    if (queue.addCalculation(currentOp.toString(), currentOp.getCline())) {
+			    if (queue.addCalculation(currentOp.getCline(), currentOp.toString())) {
 			    	System.out.println("Successfully added " + currentOp.toString());
 			    	// Yay!
 			    } else {

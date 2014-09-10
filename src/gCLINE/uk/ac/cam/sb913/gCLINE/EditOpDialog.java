@@ -84,27 +84,27 @@ public class EditOpDialog extends JDialog {
 		c.gridx = 0;
 		c.gridwidth = 2;
 		c.weighty = 1;
-		clineText = new JTextArea(data.getOp(oldname).getCline());
+		//clineText = new JTextArea(data.getOp(oldname).getCline()); TODO
 		clineText.setEditable(false);
 		command = new JScrollPane(clineText);
 		getContentPane().add(command, c);
 		
 		input = new JPanel();
 		input.setBorder(new TitledBorder("Input Files"));
-		ArrayList <FileInfo> infiles = data.getOp(oldname).getInputFiles();
-		numInfile = infiles.size();
+		//ArrayList <FileInfo> infiles = data.getOp(oldname).getInputFiles(); TODO
+		//numInfile = infiles.size();
 		
 		input.setLayout(new GridLayout(numInfile, 2));
 		infileLabel = new JLabel[numInfile];
 		infileText = new JTextField[numInfile];
-		for (int i = 0; i < numInfile; i++) {
+		/*for (int i = 0; i < numInfile; i++) { TODO
 			infileLabel[i] = 
 				new JLabel(infiles.get(i).toString());
 			input.add(infileLabel[i]);
 			infileText[i] =
 				new JTextField(infiles.get(i).getLocalDesc());
 			input.add(infileText[i]);
-		}
+		}*/
 		JScrollPane inscroll = new JScrollPane(input);
 		//inscroll.setPreferredSize(new Dimension(100, 100));
 		//inscroll.revalidate();
@@ -117,14 +117,14 @@ public class EditOpDialog extends JDialog {
 
 		output = new JPanel();
 		output.setBorder(new TitledBorder("Output Files"));
-		ArrayList <FileInfo> outfiles = data.getOp(oldname).getOutputFiles();
-		numOutfile = outfiles.size();
+		//ArrayList <FileInfo> outfiles = data.getOp(oldname).getOutputFiles(); TODO
+		//numOutfile = outfiles.size(); TODO
 		
 		output.setLayout(new GridLayout(numOutfile, 2));
 		outfileLabel = new JLabel[numOutfile];
 		outfileText = new JTextField[numOutfile];
 		int i = 0;
-		for (int j = 0; j < numOutfile; j ++){
+		/*for (int j = 0; j < numOutfile; j ++){ TODO
 			
 			outfileLabel[i] = 
 				new JLabel(outfiles.get(i).toString());
@@ -134,7 +134,7 @@ public class EditOpDialog extends JDialog {
 			output.add(outfileText[i]);
 			i++;
 			
-		}
+		}*/
 		
 		JScrollPane outscroll = new JScrollPane(output);
 		//outscroll.setPreferredSize(new Dimension(100, 100));
@@ -180,7 +180,7 @@ public class EditOpDialog extends JDialog {
 						outfileText[i].getText()});
 			}
 
-			EditOpDialog.this.data.addOperation(name, descript, cline, time, infiles, outfiles, null);
+			EditOpDialog.this.data.addCalculation(name, descript, cline, time, infiles, outfiles, null);
 			
 			EditOpDialog.this.dispose();
 		}

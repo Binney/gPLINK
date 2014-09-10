@@ -138,7 +138,7 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 	 * left file panel and before an local file notes in
 	 * the operation tree.
 	 */
-	private HashMap<String, String> globalFileNotes;
+	public HashMap<String, String> globalFileNotes;
 	
 	/**
 	 * myLock is a Lock that keeps track of the permissions
@@ -434,6 +434,7 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 	 * @return A global description for this file.
 	 */
 	public String getGlobalNote(String filename){
+		System.out.println("Setting globalfilenote " + filename);
 		return globalFileNotes.get(filename);
 	}
 	
@@ -454,7 +455,7 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 		
 	}
 	
-	/**
+	/*
 	 * Get the full information on an operation
 	 * @param opName A string that is the name of the operation
 	 * @return The full operation information
@@ -463,20 +464,6 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 		ArrayList <OperationInfo> allOperations = getAllOp();
 		for(OperationInfo op: allOperations){
 			if((op.getName()).equals(opName))
-				return op;
-		}
-		return null;
-	}
-
-	/**
-	 * Same as getOp(name) but specifies description too in case of ambiguity.
-	 * @param opName A string that is the name of the operation
-	 * @return The full operation information
-	 */
-	public OperationInfo getOp(String opName, String opDescription){
-		ArrayList <OperationInfo> allOperations = getAllOp();
-		for(OperationInfo op: allOperations){
-			if((op.getName()).equals(opName) && (op.getDescription()).equals(opDescription))
 				return op;
 		}
 		return null;
@@ -598,7 +585,7 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 					fileIndex = fileIndex.getNextSibling();
 				}//file while
 			}//folder if
-			if(opIndex.getNodeName().equals(OP_KEY)){
+			if(opIndex.getNodeName().equals(CALC_KEY)){
 				DefaultMutableTreeNode root = (DefaultMutableTreeNode)this.getRoot();
 				processFileChildren(root, opIndex);
 			} else if(opIndex.getNodeName().equals(QUEUE_KEY)){
@@ -649,7 +636,7 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 			time = OperationInfo.DATEFORMAT.format(new Date(OperationInfo.getLog( getLocalFolder(), 
 					OP_LOG_EXT, outfiles).lastModified()));
 		}
-		addOperation(opName, opDescription, cline, time, infiles, outfiles, (DefaultMutableTreeNode)node);
+		addCalculation(opName, opDescription, cline, time, infiles, outfiles, (DefaultMutableTreeNode)node);
 	}
 
 	/**
@@ -810,7 +797,7 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 		
 		//create a new operation node
 		newQueue = new QueueInfo(qName, qDescription, this);
-				
+
 		if(index == -1)
 			index = this.getChildCount(root);
 		logger.info("[addQueue(Node)] adding queue" + qName + "to index: " + index);
@@ -827,7 +814,7 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 		Node opIndex = qIndex.getFirstChild();
 		//go until you are at the last child
 		while(opIndex != null){
-			if(opIndex.getNodeName().equals(OP_KEY)){
+			if(opIndex.getNodeName().equals(CALC_KEY)){
 				processFileChildren(queueTreeNode, opIndex);
 			}
 			opIndex = opIndex.getNextSibling();
@@ -885,8 +872,8 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 	 * @param cline The command line that is tied to the operation.
 	 * @param description A description of the operation.
 	 */
-	public boolean addOperation(String cline, String description) {
-		return addOperation(cline, description, null);
+	public boolean addCalculation(String cline, String description) {
+		return addCalculation(cline, description, null);
 	}
 
 	/**
@@ -895,17 +882,17 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 	 * @param description A description of the operation.
 	 * @param node the node to which to add the operation (null for root).
 	 */
-	public boolean addOperation(String cline, String description, DefaultMutableTreeNode node) {
-		OperationInfo op = new OperationInfo(cline, description, this);
-		return this.appendOperationToTree(op, node);
+	public boolean addCalculation(String cline, String description, DefaultMutableTreeNode node) {
+		CalculationInfo calc = new CalculationInfo(cline, description, this);
+		return this.appendOperationToTree(calc, node);
 	}
 
-	public boolean addOperation(String opName, String opDescription, String cline,
+	public boolean addCalculation(String opName, String opDescription, String cline,
 		String time, ArrayList<String []> infiles, ArrayList<String []> outfiles, DefaultMutableTreeNode node) {
-
+		// TODO also append files
 		try {
-			OperationInfo op = new OperationInfo(opName, opDescription, cline, time, infiles, outfiles, (DefaultTreeModel)this);
-			return appendOperationToTree(op, node);
+			CalculationInfo calc = new CalculationInfo(opName, opDescription, cline, time, infiles, outfiles, (DefaultTreeModel)this);
+			return appendOperationToTree(calc, node);
 		} catch (Exception e) {
 			return false;
 		}
@@ -929,20 +916,18 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 		if(index == -1)
 			index = this.getChildCount(node);
 
-		logger.info("[addOperation(String, ...)] adding operation" + op.getName() + "to index: " + index);
+		logger.info("[appendOperationToTree(String, ...)] adding operation" + op.getName() + "to index: " + index);
 
 		this.insertNodeInto(op, node, index);
 		this.nodeStructureChanged(node);
-
-		// TODO this ?ought to move so that the operations are only added to the autoupdater when they're executed?
-		// Bearing in mind that operations which were stored in an XML and have already been executed need to be
-		// added to the autoupdater but not executed!
-		if(update != null)
-			update.addOp(op.getName());
 		
 		return true;
 	}
-
+	
+	public void updaterOperation(String name) {
+		if(update != null)
+			update.addOp(name);
+	}
 
 	/**
 	 * Remove an operation or queue from the document.
@@ -962,9 +947,9 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 			//root.remove(oldOp);
 		}
 		/*if(ans != -1){
-			logger.info("Successfuly removed " + opName);
+			logger.info("Successfully removed " + opName);
 		}else{
-			logger.info("Unsuccessfuly removed " + opName);
+			logger.info("Unsuccessfully removed " + opName);
 		}*/
 		//reload();
 		return ans;
@@ -972,7 +957,7 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 	
 	/**
 	 * Set a global file descriptor
-	 * @param fileName a string identifing the file (absolute path name)
+	 * @param fileName a string identifying the file (absolute path name)
 	 * @param fileDesc a string for local file description
 	 */
 	public void setGlobalFileDesc(String fileName, String fileDesc){
@@ -1326,7 +1311,7 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 		logger.info("[Record()] ...exiting");
 	}
 	/**
-	 * Create a Record initalized to a particular StartFrame.
+	 * Create a Record initialized to a particular StartFrame.
 	 * @param f The StartFrame we are attaching this Record to.
 	 */
 	public Record(StartFrame f){

@@ -150,7 +150,7 @@ public abstract class PopUpMenu extends JPopupMenu {
 			if(choice != JOptionPane.YES_OPTION)
 				return;
 			
-			data.getOp(opnames[0]).removeFile(fileNames[0]);
+			//data.getOp(opnames[0]).removeFile(fileNames[0]); TODO
 			
 		}
 	};
