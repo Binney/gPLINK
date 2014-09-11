@@ -180,9 +180,7 @@ public class FileInfo extends DefaultMutableTreeNode
 	 */
 	@Override
 	public String toString(){
-		String ans = filename;
-		
-		return ans;
+		return filename;
 	}
 	
 	public static void main(String[] args) {

@@ -42,7 +42,7 @@ public abstract class OperationInfo extends DefaultMutableTreeNode
 	 */
 	protected String timestamp;
 	
-	static public DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MMM-dd HH:mm");
+	public static DateFormat DATEFORMAT = new SimpleDateFormat("yyyy-MMM-dd HH:mm");
     
 	protected DefaultTreeModel parentTree;
 	
@@ -100,7 +100,7 @@ public abstract class OperationInfo extends DefaultMutableTreeNode
 	 * Get the name and description of this
 	 * operation.
 	 * @return A String that is the name and description
-	 * of this operation seperated by ":".
+	 * of this operation separated by ":".
 	 */
 	@Override
 	public String toString(){

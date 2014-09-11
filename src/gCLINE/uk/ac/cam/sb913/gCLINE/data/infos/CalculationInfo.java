@@ -180,24 +180,25 @@ public class CalculationInfo extends OperationInfo
 		
 		//add the file to the appropriate node
 		if(type.equals(INFILE_KEY)){
-			addFileToFolder(input, new FileInfo(given_name, localDesc, globalDesc));
+			addFileToNode(input, new FileInfo(given_name, localDesc, globalDesc));
 		}
 		if(type.equals(OUTFILE_KEY)){
-			addFileToFolder(output, new FileInfo(given_name, localDesc, globalDesc));
+			addFileToNode(output, new FileInfo(given_name, localDesc, globalDesc));
 		}
 	}
 	
 	/**
-	 * Add a file to a given folder.
-	 * @param folder A DefaultMutableTreeNode that represents either then input
-	 * or output folder for this operation.
+	 * Add a file to a given node.
+	 * @param node A DefaultMutableTreeNode that represents either then input
+	 * or output node for this operation.
 	 * @param givenFile A FileInfo that is the file we wish to add to the given
-	 * folder.
+	 * node.
 	 */
-	private void addFileToFolder(DefaultMutableTreeNode folder, FileInfo givenFile){
+	private void addFileToNode(DefaultMutableTreeNode node, FileInfo givenFile){
 		//check that there are files in this folder
-		if(!folder.isLeaf()){
-			FileInfo index = (FileInfo) folder.getFirstChild();
+		// replace existing file if one is present with the same name
+		if(!node.isLeaf()){
+			FileInfo index = (FileInfo) node.getFirstChild();
 			//look through all the files
 			while(index != null){
 				//if it's already there
@@ -211,10 +212,10 @@ public class CalculationInfo extends OperationInfo
 				index = (FileInfo) index.getNextSibling();
 			}
 		}
-		//add it to the folder
-		folder.add(givenFile);
+		//add it to the node
+		node.add(givenFile);
 		if(parentTree != null)
-			parentTree.nodeStructureChanged(folder);
+			parentTree.nodeStructureChanged(node);
 	}
 	
 	/**
@@ -317,10 +318,6 @@ public class CalculationInfo extends OperationInfo
 			((OperationInfo)(this.getParent())).finish(data, success);
 		}
 	}
-
-	public CalculationInfo (DefaultTreeModel parentTree){
-		this("","","", null, parentTree);
-	}
 	
 	/**
 	 * Create a new CalculationInfo from name, description, command, and time of creation.
@@ -334,32 +331,18 @@ public class CalculationInfo extends OperationInfo
 			String givenDesc, String command,
 			String time, DefaultTreeModel givenParentTree) {
 		super(givenName, givenDesc, time, givenParentTree);
-		cline = command;
-		add(new DefaultMutableTreeNode(cline));
-		input = new DefaultMutableTreeNode(INPUT_LABEL);
-		add(input);
-		output = new DefaultMutableTreeNode(OUTPUT_LABEL);
-		add(output);
+		addClineNode(command);
+		addInputNode();
+		addOutputNode();
 		if(time == null){
-			java.util.Date date = new java.util.Date();
-	        timestamp = DATEFORMAT.format(date);
+			stampTime();
 		} else
 			timestamp = time;
 
 		//check assumptions
-		if(name == null || description == null || cline == null) {}// TODO also check infiles and outfiles in case either is null
+		if(name == null || description == null || cline == null) {}
 			//throw new Exception("[OperationInfo] ERROR: Null arguments!");
 			// Throw an exception (TODO CreateQueue and Execute need to know how to catch this!
-
-		// TODO add files from a saved project; new ones will have the constructor below which can figure out
-		// file names from a cline but that's not how reading an operation works
-		//add the files
-		/*for(String[] file: infiles){
-			addFile(INFILE_KEY, file[0], file[1], globalFileNotes.get(file[0]));
-		}
-		for(String[] file: outfiles){
-			addFile(OUTFILE_KEY, file[0], file[1], globalFileNotes.get(file[0]));
-		}*/
 		
 	}
 
@@ -368,9 +351,19 @@ public class CalculationInfo extends OperationInfo
 		super(givenName, givenDescript, time, givenParentTree);
 		cline = command;
 
-		// TODO attach ifiles and ofiles to input and output nodes one by one
 		System.out.println("New CalculationInfo empty: " + givenName + ", " + givenDescript + ", " + command);
 
+		ArrayList <String[]> outfiles = new ArrayList <String[]> ();
+		ArrayList <String[]> infiles = new ArrayList <String[]> ();
+
+		addClineNode(command);
+		addInputNode();
+		addOutputNode();
+		stampTime();
+
+		fillFiles(infiles, INFILE_KEY);
+		fillFiles(outfiles, OUTFILE_KEY);
+        System.out.println("Done on the creation!");
 	}
 
 	// Parse command
@@ -396,13 +389,10 @@ public class CalculationInfo extends OperationInfo
 		boolean flag_out = false;
 		
 		for(String element: parsedCmd){
-			System.out.println("Now parsing element " + element);
 			if(flag_out){
-				System.out.println("Naming via parser: " + element);
 				opName = FileInfo.fileName(element);
 				flag_out = false;
 			}else if(flag_bfile){ 
-				System.out.println("Ooh, binaries!");
 				// NB if both --bfile and --file have been flagged, only
 				// binary files will be used as they are faster
 
@@ -411,7 +401,6 @@ public class CalculationInfo extends OperationInfo
 				infiles.add(new String[] {element + ".fam", ""});
 				flag_bfile = false;
 			}else if(flag_file){
-				System.out.println("Base 10 ftw!");
 				infiles.add(new String[] {element + ".map", ""});
 				infiles.add(new String[] {element + ".ped", ""});
 				flag_file = false;
@@ -421,7 +410,6 @@ public class CalculationInfo extends OperationInfo
 					&& !element.endsWith("plink")
 					&& !element.endsWith("plink\"")
 					&& !element.matches("^\\d*\\.?\\d+$")){
-				System.out.println("Now you're just what.");
 				infiles.add(new String[] {element, ""});
 			}
 			flag_file = element.equals("--file");
@@ -430,7 +418,6 @@ public class CalculationInfo extends OperationInfo
 		}
 		
 		name = opName;
-		System.out.println("Naming: " + opName);
 		description = givenDescription;
 		addClineNode(command);
 		addInputNode();
@@ -439,7 +426,6 @@ public class CalculationInfo extends OperationInfo
 
 		fillFiles(infiles, INFILE_KEY);
 		fillFiles(outfiles, OUTFILE_KEY);
-        System.out.println("Done on the creation!");
     }
 	
 	private void addClineNode(String command) {

@@ -118,6 +118,7 @@ public class AutoUpdater extends Timer {
 		
 		public void run() {
 			logger.info("[readLogs] Entering...");
+			System.out.println("[readLogs] Entering...");
 			
 			//Error out if the operation status is null. This
 			//...should never happen.
@@ -145,10 +146,12 @@ public class AutoUpdater extends Timer {
 			for(OperationInfo op: data.getAllOp()){
 				checkOperationStatus(op, allfiles);
 			}
+			System.out.println("Cycled");
 			if(frame != null && frame.folderViewer != null)
 				EventQueue.invokeLater(frame.folderViewer.new UpdateJList(false));
-			
+			System.out.println("Saving...");
 			data.saveInfo();
+			System.out.println("Saved");
 			
 			logger.info("[readLogs] ...Ending");
 
@@ -159,6 +162,7 @@ public class AutoUpdater extends Timer {
 	
 	private void checkOperationStatus(OperationInfo op, ArrayList<String> allfiles) {
 		String s = op.getName();
+		System.out.println("Now checking " + s);
 		if(s != null && opStatus.get(s) == null){
 			// this is the first time the timer was run since the task began; add it
 			// TODO need some way to tell if it's in a future queue - maybe get updater
@@ -167,12 +171,14 @@ public class AutoUpdater extends Timer {
 			// would be preferable as it doesn't require writing new stuff when a queue
 			// is partway through execution
 			logger.info("[run()@readLogs] ["+ s + "] now being flagged as Running");
+			System.out.println("[run()@readLogs] ["+ s + "] now being flagged as Running");
 			opStatus.put(s, RUNNING);
 		}
 		
 		//Check that the operation is valid and is marked as running
 		if(s != null && opStatus.get(s).equals(RUNNING)){
 			logger.info("[run()@readLogs] [" + s + "] was running.");
+			System.out.println("[run()@readLogs] [" + s + "] was running.");
 			
 			//the file that contains the status of the operation
 			File gplinkStatusFile = new File(data.getLocalFolder(), s + op_status_ext);

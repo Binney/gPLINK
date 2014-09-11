@@ -447,7 +447,6 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode)this.getRoot();
 		int numOp = root.getChildCount();
 		for(int i = 0; i < numOp; i ++){
-			System.out.println("Counting child " + i + " and it looks like a " + root.getChildAt(i).getClass().getSimpleName());
 			ArrayList <OperationInfo> li = ((OperationInfo)root.getChildAt(i)).getOpChildren();
 			ans.addAll(li);
 		}
@@ -514,9 +513,7 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 			try {
 				info = parser.parse(metaFile);
 			} catch (SAXException e) {
-				frame.messenger.createError("Error trying to create project, " +
-					"can not parse log file.\n Creating new " +
-					"project, please import old operations.\n ",
+				frame.messenger.createError("BANANASError trying to create project, can not parse log file.\n Creating new project, please import old operations.\n ",
 					"loadData@Record.java");
 				metaFile.delete();
 				return loadData(metaFile, homefile, remote);
@@ -633,8 +630,10 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 		String time = ((Element)opIndex).getAttribute(TIMESTAMP_KEY);
 		//otherwise pull the time stamp for the log file
 		if( time == null || time.matches("^\\s*$")){
-			time = OperationInfo.DATEFORMAT.format(new Date(OperationInfo.getLog( getLocalFolder(), 
-					OP_LOG_EXT, outfiles).lastModified()));
+			File log = CalculationInfo.getLog(getLocalFolder(), OP_LOG_EXT, outfiles);
+			System.out.println("Working on it");
+			System.out.println(log);
+			time = OperationInfo.DATEFORMAT.format(new Date(log.lastModified()));
 		}
 		addCalculation(opName, opDescription, cline, time, infiles, outfiles, (DefaultMutableTreeNode)node);
 	}
@@ -642,7 +641,7 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 	/**
 	 * Create a Document from the operations and
 	 * global file notes that we can then write as
-	 * an xml document easily. Returns null if 
+	 * an XML document easily. Returns null if 
 	 * unable to create a document.
 	 * @return A Document containing all the global file
 	 * notes and operation.
@@ -991,20 +990,24 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 	 */
 	public boolean saveInfo(File metaFile){
 		logger.info("(saveInfo(File)) Entering");
+		System.out.println("(saveInfo(File)) Entering");
 		if(frame.getBrowseOnly()){
 			logger.warn("[saveInfo(File)] not saving project because we are browse only");
+			System.out.println("[saveInfo(File)] not saving project because we are browse only");
 			return false;
 		}
 		
 		if(myLock.availableLock())
 			if(myLock.lockFile() == false){
 				logger.warn("[saveInfo(File)] unable to lock file(1)");
+				System.out.println("[saveInfo(File)] unable to lock file(1)");
 				return false;
 			}
 		if(!myLock.hasLock()){
 			if(!myLock.stealLock()){
 				frame.setBrowseOnly(true);
 				logger.warn("[saveInfo(File)] unable to steal the lock");
+				System.out.println("[saveInfo(File)] unable to steal the lock");
 				return false;
 			}
 		}
@@ -1020,7 +1023,9 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 						"saveInfo@Record.java");
 			} catch (IOException e) {
 				frame.messenger.createError("Can not store remote information.",
-				"saveInfo@Record.java");
+						"saveInfo@Record.java");
+				System.out.println("Can not store remote information." +
+						"saveInfo@Record.java");
 			}
 		}
 		
@@ -1031,9 +1036,11 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 		//configure the transformer
 		try {
 			transformer = tFactory.newTransformer();
+			System.out.println("Created transformer");
 		} catch (TransformerConfigurationException e1) {
 			frame.messenger.createError("Error trying to create transformer."
 					,"saveInfo@Record.java");
+			System.out.println("[saveInfo(File)] error creating transformer, returning false");
 			logger.warn("[saveInfo(File)] error creating transformer, returning false");
 			return false;
 		}
@@ -1046,30 +1053,44 @@ public abstract class Record extends DefaultTreeModel implements KeyWords{
 		StreamResult ofile = null;
 		try {
 			logger.info("(saveInfo())Write the project info to: " 
-				+ metaFile.getAbsolutePath()
-				+ "in the file: " + getLocalFolder());
+					+ metaFile.getAbsolutePath()
+					+ " in the file: " + getLocalFolder());
+			System.out.println("(saveInfo())Write the project info to: " 
+							+ metaFile.getAbsolutePath()
+							+ " in the file: " + getLocalFolder());
+			System.out.println(metaFile.toString());
 			ofile = new StreamResult(new FileWriter(metaFile));
+			System.out.println("Streamed!");
 		} catch (IOException e) {
 			frame.messenger.createError("Error trying to create file stream.",
 				"saveInfo@Record.java");
 			logger.warn("[saveInfo(File)] error creating filestream, returning false");
+			System.out.println("[saveInfo(File)] error creating filestream, returning false");
+			System.out.println(e.getMessage());
 			return false;
 		}
 		try {
+			System.out.println("Now transforming...");
+			System.out.println(transformer.toString());
 			transformer.transform(source, ofile);
+			System.out.println("Transformed!");
 		} catch (TransformerException e) {
 			frame.messenger.createError("Error trying to transform source to" +
 			"file stream.", "saveInfo@Record.java");
 			logger.warn("[saveInfo(File)] error transforming source to filestream, returning false");
+			System.out.println("[saveInfo(File)] error transforming source to filestream, returning false");
+			System.out.println(e.getMessage());
 			return false;
 		}
 		
+		System.out.println("[saveInfo(File)] uploading the metafile: ["+getRemoteFolder()+"] [" + metaFile + "]");
 		logger.info("[saveInfo(File)] uploading the metafile: ["+getRemoteFolder()+"] [" + metaFile + "]");
 		if(isRemote()){
 			new Thread(frame.new Upload(this, true, getRemoteFolder(), new File[]{metaFile})).start();
 		}
 		
 		logger.info("[saveInfo(File)] Exiting true");
+		System.out.println("[saveInfo(File)] Exiting true");
 		return true;
 	}
 	
